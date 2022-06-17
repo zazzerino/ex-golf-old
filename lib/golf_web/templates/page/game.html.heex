@@ -1,0 +1,25 @@
+<div id="game-index">
+  <svg class="game-elem"
+       width={svg_width()}
+       height={svg_height()}
+       viewBox={svg_viewbox()}>
+  </svg>
+
+  <button class="create-game-button">
+    Create game
+  </button>
+
+  <button class="start-game-button">
+    Start game
+  </button>
+
+  <button class="leave-game-button">
+    Leave game
+  </button>
+
+  <p class="game-label"></p>
+</div>
+
+<script defer phx-track-static type="text/javascript"
+        src={Routes.static_path(@conn, "/assets/game_page.js")}>
+</script>
