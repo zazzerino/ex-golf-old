@@ -1,44 +1,20 @@
-<section class="phx-hero">
-  <h2>GOLF</h2>
-</section>
+<h1>GOLF</h1>
 
-<script defer phx-track-static type="text/javascript"
+<%= unless @current_user do %>
+  <p>Log in or register to join a game.</p>
+<% end %>
+
+<%= if @current_user do %>
+  <div class="join-game">
+    <p>Connect to an existing game by entering its id below.</p>
+
+    <input class="join-game-input" type="text" placeholder="Enter game id" />
+    <button class="join-game-button">Join Game</button>
+  </div>
+<% end %>
+
+<script defer
+        phx-track-static
+        type="text/javascript"
         src={Routes.static_path(@conn, "/assets/index_page.js")}>
 </script>
-
-<!-- <section class="row"> -->
-<!--   <article class="column"> -->
-<!--     <h2>Resources</h2> -->
-<!--     <ul> -->
-<!--       <li> -->
-<!--         <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a> -->
-<!--       </li> -->
-<!--       <li> -->
-<!--         <a href="https://github.com/phoenixframework/phoenix">Source</a> -->
-<!--       </li> -->
-<!--       <li> -->
-<!--         <a href="https://github.com/phoenixframework/phoenix/blob/v1.6/CHANGELOG.md">v1.6 Changelog</a> -->
-<!--       </li> -->
-<!--     </ul> -->
-<!--   </article> -->
-<!--   <article class="column"> -->
-<!--     <h2>Help</h2> -->
-<!--     <ul> -->
-<!--       <li> -->
-<!--         <a href="https://elixirforum.com/c/phoenix-forum">Forum</a> -->
-<!--       </li> -->
-<!--       <li> -->
-<!--         <a href="https://web.libera.chat/#elixir">#elixir on Libera Chat (IRC)</a> -->
-<!--       </li> -->
-<!--       <li> -->
-<!--         <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a> -->
-<!--       </li> -->
-<!--       <li> -->
-<!--         <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a> -->
-<!--       </li> -->
-<!--       <li> -->
-<!--         <a href="https://discord.gg/elixir">Elixir on Discord</a> -->
-<!--       </li> -->
-<!--     </ul> -->
-<!--   </article> -->
-<!-- </section> -->

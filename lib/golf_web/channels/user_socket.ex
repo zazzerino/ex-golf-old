@@ -2,6 +2,7 @@ defmodule GolfWeb.UserSocket do
   use Phoenix.Socket
 
   channel "room:*", GolfWeb.RoomChannel
+  channel "game:*", GolfWeb.GameChannel
 
   @impl true
   def connect(%{"token" => token}, socket, _info) when is_binary(token) do

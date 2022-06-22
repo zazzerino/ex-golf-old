@@ -1,11 +1,6 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
-header nav {
-  /* margin-left: auto; */
-  margin-right: auto;
-}
-
 header nav li {
   text-align: left;
 }
@@ -13,6 +8,79 @@ header nav li {
 .game-elem {
   background-color: seagreen;
 }
+
+.game-label {
+  margin-bottom: -0.25rem;
+}
+
+.game-buttons button {
+  margin-left: 1rem;
+}
+
+.card {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.card.highlight {
+  filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
+  cursor: pointer;
+}
+
+.game-over-message {
+  transform-box: fill-box;
+  transform-origin: center;
+  /* animation: rotating 6s linear infinite; */
+  /* animation-delay: 2s; */
+}
+
+.game-over-message rect {
+  fill: cornflowerblue;
+}
+
+.game-over-message text {
+  fill: cornflowerblue;
+  font-size: 500%;
+  text-anchor: middle;
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* .fade-in {
+   animation: fade-in 0.5s linear;
+   }
+
+   @keyframes fade-in {
+   from {
+   opacity: 0;
+   } 
+
+   to {
+   opacity: 1;
+   }
+   }
+
+   .fade-out {
+   animation: fade-out 0.5s linear;
+   }
+
+   @keyframes fade-out {
+   from {
+   opacity: 1;
+   } 
+
+   to {
+   opacity: 0;
+   }
+   } */
 
 /* Alerts and form errors used by phx.new */
 .alert {

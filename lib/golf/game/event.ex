@@ -12,4 +12,8 @@ defmodule Golf.Game.Event do
           player_id: Player.id(),
           data: %{}
         }
+
+  def new(action, player_id, data \\ %{}) do
+    %Event{action: action, player_id: player_id, data: data}
+  end
 end

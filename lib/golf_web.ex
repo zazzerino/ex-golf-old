@@ -74,6 +74,8 @@ defmodule GolfWeb do
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+
+      import GolfWeb.UserAuth
     end
   end
 
@@ -99,6 +101,18 @@ defmodule GolfWeb do
       import GolfWeb.Gettext
       alias GolfWeb.Router.Helpers, as: Routes
     end
+  end
+
+  def broadcast_game_update(game, msg) do
+    GolfWeb.Endpoint.broadcast("game:" <> game.id, "game_update", %{game: game, msg: msg})
+  end
+
+  def broadcast_game_update(game) do
+    GolfWeb.Endpoint.broadcast("game:" <> game.id, "game_update", %{game: game})
+  end
+
+  def unassign(socket, key) do
+    update_in(socket.assigns, &Map.drop(&1, [key]))
   end
 
   @doc """

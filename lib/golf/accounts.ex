@@ -6,6 +6,10 @@ defmodule Golf.Accounts do
 
   ## Database getters
 
+  def get_user(id), do: Repo.get(User, id)
+
+  def get_user!(id), do: Repo.get!(User, id)
+
   def get_user_by_name(name) when is_binary(name) do
     Repo.get_by(User, name: name)
   end
@@ -16,9 +20,13 @@ defmodule Golf.Accounts do
     if User.valid_password?(user, password), do: user
   end
 
-  def get_user!(id), do: Repo.get!(User, id)
-
-  def get_user(id), do: Repo.get(User, id)
+  def fetch_user(id) do
+    if user = get_user(id) do
+      {:ok, user}
+    else
+      {:error, "user not found"}
+    end
+  end
 
   ## User registration
 
@@ -62,8 +70,6 @@ defmodule Golf.Accounts do
       user
       |> User.name_changeset(%{name: name})
 
-    # |> User.confirm_changeset()
-
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
@@ -87,6 +93,12 @@ defmodule Golf.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  def update_user_current_game(user, game_id) do
+    user
+    |> User.current_game_changeset(%{current_game: game_id})
+    |> Repo.update()
   end
 
   ## Session
@@ -141,4 +153,20 @@ defmodule Golf.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def leave_current_game(%{current_game: game_id} = user) when is_binary(game_id) do
+    {:ok, user} = update_user_current_game(user, nil)
+
+    case Golf.GameServer.remove_player(game_id, user.id) do
+      {:ok, game} ->
+        msg = "Player #{user.name} has left."
+        GolfWeb.broadcast_game_update(game, msg)
+        {:ok, user}
+
+      _ ->
+        {:ok, user}
+    end
+  end
+
+  def leave_current_game(user), do: {:ok, user}
 end

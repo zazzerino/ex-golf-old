@@ -20,7 +20,7 @@ defmodule Golf.MixProject do
   def application do
     [
       mod: {Golf.Application, []},
-      extra_applications: [:logger, :runtime_tools, :gen_state_machine]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -49,8 +49,8 @@ defmodule Golf.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:gen_state_machine, "~> 3.0"},
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:ecto_psql_extras, "~> 0.6"}
     ]
   end
 

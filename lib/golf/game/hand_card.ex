@@ -9,4 +9,13 @@ defmodule Golf.Game.HandCard do
           card: Card.t(),
           covered?: boolean
         }
+
+  def new(card, opts \\ []) do
+    covered? = Keyword.get(opts, :covered?, true)
+    %HandCard{card: card, covered?: covered?}
+  end
+
+  def uncover(hand_card) do
+    %HandCard{hand_card | covered?: false}
+  end
 end

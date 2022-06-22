@@ -69,6 +69,10 @@ defmodule Golf.Accounts.User do
     |> validate_password(opts)
   end
 
+  def current_game_changeset(user, attrs, _opts \\ []) do
+    cast(user, attrs, [:current_game])
+  end
+
   def valid_password?(%Golf.Accounts.User{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
