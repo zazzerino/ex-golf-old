@@ -22,7 +22,6 @@ lobbyChan.join()
 function joinGameChan(gameId) {
   // if we're connected to a game channel already, leave it
   gameChan && gameChan.leave().receive("error", console.error);
-
   gameChan = socket.channel(`game:${gameId}`);
 
   gameChan.on("game_update", ({ game, msg }) => {

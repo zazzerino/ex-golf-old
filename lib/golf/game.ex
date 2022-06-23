@@ -3,16 +3,18 @@ defmodule Golf.Game do
   alias __MODULE__.{Card, Deck, Event, Player}
 
   @derive Jason.Encoder
-  defstruct id: nil,
-            state: nil,
-            deck: [],
-            table_cards: [],
-            players: %{},
-            player_order: [],
-            host_id: nil,
-            next_player_id: nil,
-            final_turn?: false,
-            events: []
+  defstruct [
+    :id,
+    :state,
+    :host_id,
+    :next_player_id,
+    deck: [],
+    table_cards: [],
+    players: %{},
+    player_order: [],
+    final_turn?: false,
+    events: []
+  ]
 
   @type id :: String.t()
 

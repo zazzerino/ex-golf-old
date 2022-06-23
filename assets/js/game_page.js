@@ -4,8 +4,8 @@
 
 import { PUB_SUB } from "./app";
 import { pushCreateGame, pushLeaveGame, pushStartGame } from "./user_socket";
-import { drawGame } from "./game_svg";
 import { removeChildren } from "./svg";
+import { drawGame } from "./game_svg";
 
 console.log("loaded game_page.js");
 
@@ -21,6 +21,12 @@ PUB_SUB.subscribe("user_update", user => {
 
 PUB_SUB.subscribe("game_update", game => {
   state.game = game;
+
+  const gameLabelText = `Game: ${game.id}`;
+  
+  if (gameLabel.innerHTML === gameLabelText) {
+    gameLabel.innerHTML = gameLabelText;
+  }
 
   gameLabel.innerHTML = `Game: ${game.id}`;
   removeChildren(gameElem);

@@ -6,10 +6,10 @@ export function removeChildren(elem) {
   }
 }
 
-export function animateElem(elem, { x = 0, y = 0 }, seconds = 0.8) {
+export function animateElem(elem, { x = 0, y = 0, rotate = 0 }, seconds = 1) {
   requestAnimationFrame(() => {
     // immediately move to (x,y) offset
-    elem.style.transform = `translate(${x}px, ${y}px)`;
+    elem.style.transform = `translate(${x}px, ${y}px) rotate(${rotate}deg)`;
     elem.style.transition = "transform 0s";
 
     requestAnimationFrame(() => {

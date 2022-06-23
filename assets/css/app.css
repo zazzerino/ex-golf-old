@@ -34,14 +34,18 @@ header nav li {
   /* animation-delay: 2s; */
 }
 
-.game-over-message rect {
-  fill: cornflowerblue;
-}
+/* .game-over-message rect {
+   fill: cornflowerblue;
+   } */
 
 .game-over-message text {
   fill: cornflowerblue;
   font-size: 500%;
   text-anchor: middle;
+}
+
+.player-score rect {
+  fill: cornflowerblue;
 }
 
 @keyframes rotating {

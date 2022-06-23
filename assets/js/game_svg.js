@@ -48,10 +48,13 @@ export function drawGame(elem, userId, game, width = ELEM_WIDTH, height = ELEM_H
   heldCards.forEach(card => elem.appendChild(card));
   callbacks.push(animHeldCard);
 
+  const score = makeScore(game.players[1], "BOTTOM", width, height);
+  elem.appendChild(score);
+
   if (game.state === "over") {
-    const gameOverMsg = makeGameOverMessage(width, height);
-    elem.appendChild(gameOverMsg);
-    return;
+    const gameOverMessage = makeGameOverMessage(width, height);
+    elem.appendChild(gameOverMessage);
+    return; // if the game's over, no need to animate
   }
 
   return animate;
@@ -81,7 +84,7 @@ function makeDeck(userId, game, _width, height) {
   const cardName = "2B";
   const className = "deck";
 
-  let highlight, onClick;
+  let highlight, onClick, callback;
 
   if (isPlayable(userId, game, "deck")) {
     highlight = true;
@@ -90,17 +93,16 @@ function makeDeck(userId, game, _width, height) {
 
   const card = makeCard({ x, y, cardName, className, highlight, onClick });
 
-  let animDeck;
   if (game.state === "init") {
-    animDeck = () => animateElem(card, { y: -height / 2 });
+    callback = () => animateElem(card, { y: -height / 2, rotate: 90 });
   }
 
-  return [card, animDeck];
+  return [card, callback];
 }
 
 function makeTableCards(userId, game, width, height) {
   const cardName = game.table_cards[0];
-  if (!cardName) return [null, null];
+  if (!cardName) return [null];
 
   const { x, y } = TABLE_CARD_COORD;
   const className = "table-card";
@@ -129,7 +131,11 @@ function makeTableCards(userId, game, width, height) {
 
     const pos = playerPosition(userId, game, event.player_id);
     const coord = heldCardCoord(pos, width, height);
-    callback = () => animateElem(card, { x: coord.x - CARD_WIDTH / 2, y: coord.y });
+    const animX = coord.x - CARD_WIDTH / 2;
+    const animY = coord.y;
+    
+    callback = () => animateElem(card, { x: animX, y: animY });
+    
   } else if (action === "swap_card") {
     if (game.table_cards.length > 1) {
       const secondName = game.table_cards[1];
@@ -138,9 +144,10 @@ function makeTableCards(userId, game, width, height) {
 
     const pos = playerPosition(userId, game, event.player_id);
     const coord = handCoord(pos, width, height);
-    callback = () => animateElem(
-      card,
-      { x: coord.x - CARD_WIDTH / 2, y: coord.y - CARD_HEIGHT / 2 });
+    const animX = coord.x - CARD_WIDTH / 2;
+    const animY = coord.y - CARD_HEIGHT / 12;
+    
+    callback = () => animateElem(card, { x: animX, y: animY, rotate: 90 });
   }
 
   return [card, secondCard, callback];
@@ -164,12 +171,12 @@ function makeHand({ userId, playerId, hand, transform, game }) {
     if (game.state === "uncover_two" && userId === playerId) {
       highlight = true;
       onClick = () => pushUncoverCard(index);
-    } else if (userId === playerId && isCovered && isPlayable(userId, game, className)) {
-      highlight = true;
-
-      if (game.state === "uncover") {
+    } else if (userId === playerId && isPlayable(userId, game, className)) {
+      if (isCovered && game.state === "uncover") {
+        highlight = true;
         onClick = () => pushUncoverCard(index);
       } else if (game.state === "discard") {
+        highlight = true;
         onClick = () => pushSwapCard(index);
       }
     }
@@ -250,17 +257,56 @@ function makeHeldCards(userId, game, width, height) {
   return [cards, callback];
 }
 
-function makeGameOverMessage(width, height) {
+function makeScore(player, position, width, height) {
+  const { x, y } = scoreCoord(position, width, height);
+  const group = makeSvgGroup();
+  group.classList.add("player-score");
+
+  const rw = width * 0.25;
+  const rh = height * 0.15;
+  const rx = x - rw / 2;
+  const ry = y - rh / 2;
+
+  const rect = makeSvgRect({ x: rx, y: ry, width: rw, height: rh });
+  group.appendChild(rect);
+
+  const nameText = makeSvgText({ x, y: y - 10, text: `Name: ${player.name}` });
+  group.appendChild(nameText);
+
+  const scoreText = makeSvgText({ x, y: y + 12, text: `Score: ${player.score}` });
+  group.appendChild(scoreText);
+
+  return group;
+}
+
+function scoreCoord(position, width, height) {
+  let x = 0, y = 0;
+
+  switch (position) {
+    case 'BOTTOM':
+      x = -CARD_WIDTH * 3;
+      y = height / 2 - CARD_HEIGHT - HAND_PADDING * 4;
+      break;
+    case 'LEFT':
+      x = -(width / 2) + CARD_HEIGHT + HAND_PADDING * 4;
+      y = -CARD_WIDTH * 2.4;
+      break;
+    case 'TOP':
+      x = CARD_WIDTH * 3;
+      y = -height / 2 + CARD_HEIGHT + HAND_PADDING * 4;
+      break;
+    case 'RIGHT':
+      x = width / 2 - CARD_HEIGHT - HAND_PADDING * 4;
+      y = -CARD_WIDTH * 2.4;
+      break;
+  }
+
+  return { x, y };
+}
+
+function makeGameOverMessage(_width, _height) {
   const group = makeSvgGroup();
   group.classList.add("game-over-message");
-
-  // const rw = width / 2.5;
-  // const rh = height / 5;
-  // const rx = -rw / 2;
-  // const ry = -rh / 2;
-
-  // const rect = makeSvgRect({ x: rx, y: ry, width: rw, height: rh });
-  // group.appendChild(rect);
 
   const text = makeSvgText({ x: 0, y: 0, text: "Game Over" });
   group.appendChild(text);
@@ -285,9 +331,9 @@ export function playableCards(gameState) {
   }
 }
 
-function isPlayable(userId, game, cardPos) {
-  return userId === game.next_player_id
-    && playableCards(game.state).includes(cardPos);
+function isPlayable(userId, { next_player_id, state }, cardPos) {
+  return userId === next_player_id
+    && playableCards(state).includes(cardPos);
 }
 
 function handPositions(playerCount) {

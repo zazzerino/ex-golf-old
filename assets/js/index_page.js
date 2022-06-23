@@ -17,7 +17,8 @@ if (joinGameButton) {
   };
 }
 
+const alertDanger = document.querySelector(".alert-danger");
+
 PUB_SUB.subscribe("game_not_found", gameId => {
-  const alert = document.querySelector(".alert-danger");
-  alert.innerHTML = `Game '${gameId}' not found.`;
+  alertDanger.innerHTML = `Game '${gameId}' not found.`;
 });

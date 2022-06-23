@@ -5,6 +5,7 @@ defmodule Golf.Game.Card do
     <<rank, _suit>> = card
 
     case rank do
+      ?K -> 0
       ?A -> 1
       ?2 -> 2
       ?3 -> 3
@@ -17,7 +18,6 @@ defmodule Golf.Game.Card do
       ?T -> 10
       ?J -> 10
       ?Q -> 10
-      ?K -> 0
     end
   end
 end

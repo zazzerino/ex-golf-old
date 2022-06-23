@@ -3,7 +3,7 @@ defmodule Golf.Game.Event do
   alias Golf.Game.Player
 
   @derive Jason.Encoder
-  defstruct action: nil, player_id: nil, data: %{}
+  defstruct [:action, :player_id, :data]
 
   @type action :: :take_from_deck | :take_from_table | :swap | :uncover
 
