@@ -17,3 +17,10 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
+
+## Card Images
+
+The card images were downloaded from:
+https://www.me.uk/cards/
+
+Courtesy of RevK under the Creative Commons CC0 Public Domain license.

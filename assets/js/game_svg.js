@@ -5,10 +5,6 @@ import {
   pushUncoverCard, pushTakeFromDeck, pushTakeFromTable, pushDiscard, pushSwapCard
 } from "./user_socket";
 
-// size of the game svg elem in px
-const ELEM_WIDTH = 600;
-const ELEM_HEIGHT = 500;
-
 // size of svg card images in px
 const CARD_WIDTH = 60;
 const CARD_HEIGHT = 84;
@@ -33,14 +29,16 @@ export function drawGame(elem, userId, game, width = ELEM_WIDTH, height = ELEM_H
   }
 
   const hands = makeHands(userId, game, width, height);
-  hands.forEach(([hand, _animHand]) => elem.appendChild(hand));
+  hands.forEach(([hand, animHand]) => {
+    elem.appendChild(hand);
+    callbacks.push(animHand);
+  });
 
   const [tableCard, secondTableCard, animTableCard] =
     makeTableCards(userId, game, width, height);
 
   callbacks.push(animTableCard);
 
-  // add the second table card first, so it's on the bottom
   secondTableCard && elem.appendChild(secondTableCard);
   tableCard && elem.appendChild(tableCard);
 
@@ -48,19 +46,19 @@ export function drawGame(elem, userId, game, width = ELEM_WIDTH, height = ELEM_H
   heldCards.forEach(card => elem.appendChild(card));
   callbacks.push(animHeldCard);
 
-  const score = makeScore(game.players[1], "BOTTOM", width, height);
-  elem.appendChild(score);
+  const scores = makeScores(userId, game, width, height);
+  scores.forEach(score => elem.appendChild(score));
 
   if (game.state === "over") {
     const gameOverMessage = makeGameOverMessage(width, height);
     elem.appendChild(gameOverMessage);
-    return; // if the game's over, no need to animate
+    return;
   }
 
   return animate;
 }
 
-function makeCard({ x, y, cardName, className, onClick, highlight }) {
+function makeCard({ x, y, cardName, className, onClick, highlight, fadeIn }) {
   // adjust x and y so the image is centered
   x = x - CARD_WIDTH / 2;
   y = y - CARD_HEIGHT / 2;
@@ -68,11 +66,12 @@ function makeCard({ x, y, cardName, className, onClick, highlight }) {
   const href = `/images/cards/${cardName}.svg`;
   const elem = makeSvgImage({ x, y, href, onClick });
 
-  elem.setAttribute("width", "10%");
+  elem.setAttribute("width", "12%");
   elem.classList.add("card");
 
   className && elem.classList.add(className);
   highlight && elem.classList.add("highlight");
+  fadeIn && elem.classList.add("fade-in");
 
   return elem;
 }
@@ -147,7 +146,7 @@ function makeTableCards(userId, game, width, height) {
     const animX = coord.x - CARD_WIDTH / 2;
     const animY = coord.y - CARD_HEIGHT / 12;
     
-    callback = () => animateElem(card, { x: animX, y: animY, rotate: 90 });
+    callback = () => animateElem(card, { x: animX, y: animY });
   }
 
   return [card, secondCard, callback];
@@ -277,6 +276,23 @@ function makeScore(player, position, width, height) {
   group.appendChild(scoreText);
 
   return group;
+}
+
+function makeScores(userId, game, width, height) {
+  const userIndex = game.player_order.findIndex(id => id === userId);
+  const playerIds = rotateArray(game.player_order, userIndex);
+  const players = playerIds.map(id => game.players[id]);
+  const positions = handPositions(players.length);
+
+  const scores = [];
+
+  for (const [index, player] of players.entries()) {
+    const position = positions[index];
+    const score = makeScore(player, position, width, height);
+    scores.push(score);
+  }
+
+  return scores;
 }
 
 function scoreCoord(position, width, height) {

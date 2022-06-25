@@ -1,5 +1,5 @@
 import { Socket } from "phoenix"
-import { PUB_SUB } from "./app";
+import { PUBSUB } from "./app";
 
 const socket = new Socket("/socket", { params: { token: window.userToken } })
 socket.connect()
@@ -10,7 +10,7 @@ let gameChan;
 lobbyChan.join()
   .receive("ok", ({ user }) => {
     if (user) {
-      PUB_SUB.publish("user_update", user);
+      PUBSUB.publish("user_update", user);
 
       if (user.current_game) {
         joinGameChan(user.current_game);
@@ -25,12 +25,12 @@ function joinGameChan(gameId) {
   gameChan = socket.channel(`game:${gameId}`);
 
   gameChan.on("game_update", ({ game, msg }) => {
-    PUB_SUB.publish("game_update", game)
+    PUBSUB.publish("game_update", game)
     msg && console.log(msg);
   });
 
   gameChan.join()
-    .receive("ok", ({ game }) => PUB_SUB.publish("game_update", game))
+    .receive("ok", ({ game }) => PUBSUB.publish("game_update", game))
     .receive("error", console.error);
 }
 
@@ -38,7 +38,7 @@ export function pushCreateGame() {
   lobbyChan.push("create_game")
     .receive("ok", ({ user, game }) => {
       console.log("Game created:", game);
-      user && PUB_SUB.publish("user_update", user);
+      user && PUBSUB.publish("user_update", user);
       game && joinGameChan(game.id);
     })
     .receive("error", console.error);
@@ -48,10 +48,10 @@ export function pushLeaveGame() {
   gameChan &&
     gameChan.push("leave_game")
       .receive("ok", ({ user }) => {
-        user && PUB_SUB.publish("user_update", user);
+        user && PUBSUB.publish("user_update", user);
 
         gameChan.leave()
-          .receive("ok", () => PUB_SUB.publish("game_left"))
+          .receive("ok", () => PUBSUB.publish("game_left"))
           .receive("error", console.error);
       })
       .receive("error", console.error);
@@ -61,7 +61,7 @@ export function pushJoinGame(gameId) {
   return lobbyChan.push("join_game", { gameId })
     .receive("ok", ({ user, game }) => {
       if (user && game) {
-        PUB_SUB.publish("user_update", user);
+        PUBSUB.publish("user_update", user);
         joinGameChan(game.id);
 
         if (location.pathname !== "/game") {
@@ -69,7 +69,7 @@ export function pushJoinGame(gameId) {
         }
       }
     })
-    .receive("error", () => PUB_SUB.publish("game_not_found", gameId));
+    .receive("error", () => PUBSUB.publish("game_not_found", gameId));
 }
 
 export function pushStartGame() {

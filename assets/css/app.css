@@ -1,20 +1,34 @@
-/* This file is for your main application CSS */
+@import "./milligram.css";
 @import "./phoenix.css";
 
-header nav li {
-  text-align: left;
+body {
+  text-align: center;
+}
+
+header {
+  background: #fdfdfd;
+  margin-bottom: 2rem;  
+  border-bottom: 1px solid #eaeaea;
+}
+
+nav {
+  display: flex;
+  width: 80%;
+  margin: auto;
+}
+
+nav li {
+  list-style-type: none;
+  margin: auto;
+  margin-bottom: 0rem;
+}
+
+.game-label:empty {
+  display:none;
 }
 
 .game-elem {
   background-color: seagreen;
-}
-
-.game-label {
-  margin-bottom: -0.25rem;
-}
-
-.game-buttons button {
-  margin-left: 1rem;
 }
 
 .card {
@@ -27,179 +41,12 @@ header nav li {
   cursor: pointer;
 }
 
-.game-over-message {
-  transform-box: fill-box;
-  transform-origin: center;
-  /* animation: rotating 6s linear infinite; */
-  /* animation-delay: 2s; */
+.player-score rect {
+  fill: cornflowerblue;
 }
-
-/* .game-over-message rect {
-   fill: cornflowerblue;
-   } */
 
 .game-over-message text {
   fill: cornflowerblue;
   font-size: 500%;
   text-anchor: middle;
-}
-
-.player-score rect {
-  fill: cornflowerblue;
-}
-
-@keyframes rotating {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* .fade-in {
-   animation: fade-in 0.5s linear;
-   }
-
-   @keyframes fade-in {
-   from {
-   opacity: 0;
-   } 
-
-   to {
-   opacity: 1;
-   }
-   }
-
-   .fade-out {
-   animation: fade-out 0.5s linear;
-   }
-
-   @keyframes fade-out {
-   from {
-   opacity: 1;
-   } 
-
-   to {
-   opacity: 0;
-   }
-   } */
-
-/* Alerts and form errors used by phx.new */
-.alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
-.alert-info {
-  color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-.alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-}
-.alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-.alert p {
-  margin-bottom: 0;
-}
-.alert:empty {
-  display: none;
-}
-.invalid-feedback {
-  color: #a94442;
-  display: block;
-  margin: -1rem 0 2rem;
-}
-
-/* LiveView specific classes for your customization */
-.phx-no-feedback.invalid-feedback,
-.phx-no-feedback .invalid-feedback {
-  display: none;
-}
-
-.phx-click-loading {
-  opacity: 0.5;
-  transition: opacity 1s ease-out;
-}
-
-.phx-loading{
-  cursor: wait;
-}
-
-.phx-modal {
-  opacity: 1!important;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
-.phx-modal-content {
-  background-color: #fefefe;
-  margin: 15vh auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-.phx-modal-close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.phx-modal-close:hover,
-.phx-modal-close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.fade-in-scale {
-  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
-}
-
-.fade-out-scale {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-scale-keys;
-}
-
-.fade-in {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-in-keys;
-}
-.fade-out {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
-}
-
-@keyframes fade-in-scale-keys{
-  0% { scale: 0.95; opacity: 0; }
-  100% { scale: 1.0; opacity: 1; }
-}
-
-@keyframes fade-out-scale-keys{
-  0% { scale: 1.0; opacity: 1; }
-  100% { scale: 0.95; opacity: 0; }
-}
-
-@keyframes fade-in-keys{
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes fade-out-keys{
-  0% { opacity: 1; }
-  100% { opacity: 0; }
 }

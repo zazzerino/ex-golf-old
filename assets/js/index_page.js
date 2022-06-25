@@ -2,7 +2,7 @@
  * This file will be loaded when the user visits "/".
  */
 
-import { PUB_SUB } from "./app";
+import { PUBSUB } from "./app";
 import { pushJoinGame } from "./user_socket";
 
 console.log("loaded index_page.js");
@@ -19,6 +19,6 @@ if (joinGameButton) {
 
 const alertDanger = document.querySelector(".alert-danger");
 
-PUB_SUB.subscribe("game_not_found", gameId => {
+PUBSUB.subscribe("game_not_found", gameId => {
   alertDanger.innerHTML = `Game '${gameId}' not found.`;
 });

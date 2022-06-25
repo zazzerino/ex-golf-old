@@ -2,7 +2,7 @@
  * This file will be loaded when the user visits "/game".
  */
 
-import { PUB_SUB } from "./app";
+import { PUBSUB } from "./app";
 import { pushCreateGame, pushLeaveGame, pushStartGame } from "./user_socket";
 import { removeChildren } from "./svg";
 import { drawGame } from "./game_svg";
@@ -15,11 +15,14 @@ window.state = state;
 const gameLabel = document.querySelector(".game-label");
 const gameElem = document.querySelector(".game-elem");
 
-PUB_SUB.subscribe("user_update", user => {
+const gameElemWidth = gameElem.clientWidth;
+const gameElemHeight = gameElem.clientHeight;
+
+PUBSUB.subscribe("user_update", user => {
   state.user = user;
 });
 
-PUB_SUB.subscribe("game_update", game => {
+PUBSUB.subscribe("game_update", game => {
   state.game = game;
 
   const gameLabelText = `Game: ${game.id}`;
@@ -31,11 +34,11 @@ PUB_SUB.subscribe("game_update", game => {
   gameLabel.innerHTML = `Game: ${game.id}`;
   removeChildren(gameElem);
 
-  const animate = drawGame(gameElem, state.user.id, game);
+  const animate = drawGame(gameElem, state.user.id, game, gameElemWidth, gameElemHeight);
   animate && animate();
 });
 
-PUB_SUB.subscribe("game_left", () => {
+PUBSUB.subscribe("game_left", () => {
   console.log("Left game.");
   state.game = null;
 
