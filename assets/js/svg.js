@@ -14,7 +14,7 @@ export function animateElem(elem, { x = 0, y = 0, rotate = 0 }, seconds = 0.8) {
 
     requestAnimationFrame(() => {
       // return to the original position over the course of `seconds`
-      elem.style.transform = "";
+      elem.style.transform = "none";
       elem.style.transition = `transform ${seconds}s`;
     });
   });

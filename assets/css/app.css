@@ -6,9 +6,8 @@ body {
 }
 
 header {
-  background: #fdfdfd;
-  margin-bottom: 2rem;  
   border-bottom: 1px solid #eaeaea;
+  margin-bottom: 2rem;    
 }
 
 nav {
@@ -41,12 +40,27 @@ nav li {
   cursor: pointer;
 }
 
+.player-score {
+  transform-box: fill-box;
+  transform-origin: center;  
+}
+
 .player-score rect {
   fill: cornflowerblue;
+  filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
 }
 
 .game-over-message text {
-  fill: cornflowerblue;
+  fill: #9b4dca;
+  filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
   font-size: 500%;
   text-anchor: middle;
+}
+
+.start-game-button {
+  display: none;
+}
+
+.leave-game-button {
+  display: none;
 }

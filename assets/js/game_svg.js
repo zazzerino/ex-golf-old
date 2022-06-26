@@ -46,8 +46,8 @@ export function drawGame(elem, userId, game, width = ELEM_WIDTH, height = ELEM_H
   heldCards.forEach(card => elem.appendChild(card));
   callbacks.push(animHeldCard);
 
-  const scores = makeScores(userId, game, width, height);
-  scores.forEach(score => elem.appendChild(score));
+  // const scores = makeScores(userId, game, width, height);
+  // scores.forEach(score => elem.appendChild(score));
 
   if (game.state === "over") {
     const gameOverMessage = makeGameOverMessage(width, height);
@@ -152,6 +152,17 @@ function makeTableCards(userId, game, width, height) {
   return [card, secondCard, callback];
 }
 
+function uncoveredCardCount(game, playerId) {
+  const player = game.players[playerId];
+  let count = 0;
+  for (const card of player.hand) {
+    if (!card["covered?"]) {
+      ++count;
+    }
+  }
+  return count;
+}
+
 function makeHand({ userId, playerId, hand, transform, game }) {
   const elem = makeSvgGroup();
   elem.classList.add("hand");
@@ -162,12 +173,15 @@ function makeHand({ userId, playerId, hand, transform, game }) {
   for (const [index, handCard] of hand.entries()) {
     let { card: cardName, "covered?": isCovered } = handCard;
     cardName = isCovered ? "2B" : cardName;
+    
     const className = `h${index}`;
     const { x, y } = handCardCoord(index);
 
     let highlight, onClick;
 
-    if (game.state === "uncover_two" && userId === playerId) {
+    if (game.state === "uncover_two"
+      && userId === playerId
+      && uncoveredCardCount(game, userId) < 2) {
       highlight = true;
       onClick = () => pushUncoverCard(index);
     } else if (userId === playerId && isPlayable(userId, game, className)) {
@@ -300,7 +314,7 @@ function scoreCoord(position, width, height) {
 
   switch (position) {
     case 'BOTTOM':
-      x = -CARD_WIDTH * 3;
+      x = -CARD_WIDTH * 2.85;
       y = height / 2 - CARD_HEIGHT - HAND_PADDING * 4;
       break;
     case 'LEFT':
@@ -308,7 +322,7 @@ function scoreCoord(position, width, height) {
       y = -CARD_WIDTH * 2.4;
       break;
     case 'TOP':
-      x = CARD_WIDTH * 3;
+      x = CARD_WIDTH * 2.85;
       y = -height / 2 + CARD_HEIGHT + HAND_PADDING * 4;
       break;
     case 'RIGHT':
@@ -347,9 +361,9 @@ export function playableCards(gameState) {
   }
 }
 
-function isPlayable(userId, { next_player_id, state }, cardPos) {
-  return userId === next_player_id
-    && playableCards(state).includes(cardPos);
+function isPlayable(userId, game, cardPos) {
+  return userId === game.next_player_id
+    && playableCards(game.state).includes(cardPos);
 }
 
 function handPositions(playerCount) {
@@ -358,7 +372,9 @@ function handPositions(playerCount) {
     case 2: return ["BOTTOM", "TOP"];
     case 3: return ["BOTTOM", "LEFT", "RIGHT"];
     case 4: return ["BOTTOM", "LEFT", "TOP", "RIGHT"];
-    default: throw new Error(`invalid playerCount: ${playerCount}`);
+
+    default:
+      throw new Error(`invalid playerCount: ${playerCount}`);
   }
 }
 
@@ -428,8 +444,7 @@ function handCardCoord(index) {
 }
 
 function heldCardCoord(position, width, height) {
-  let x, y;
-  let rotate = 0;
+  let x, y, rotate = 0;
 
   switch (position) {
     case 'BOTTOM':

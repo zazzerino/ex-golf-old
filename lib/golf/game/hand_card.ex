@@ -19,11 +19,11 @@ defmodule Golf.Game.HandCard do
     %HandCard{hand_card | covered?: false}
   end
 
-  def golf_value(hand_card) do
-    if hand_card.covered? do
+  def golf_value(%{card: card, covered?: covered?}) do
+    if covered? do
       :none
     else
-      Card.golf_value(hand_card.card)
+      Card.golf_value(card)
     end
   end
 end

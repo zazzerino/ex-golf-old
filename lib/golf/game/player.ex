@@ -52,7 +52,7 @@ defmodule Golf.Game.Player do
       [a, a, a, a, a, a] when is_integer(a) ->
         -100
 
-      # outer 4 match
+      # outer cols match
       [a, b, a, a, c, a] when is_integer(a) ->
         golf_vals_total([b, c], total - 40)
 
@@ -88,7 +88,7 @@ defmodule Golf.Game.Player do
         total
 
       _ ->
-        Enum.reject(vals, &(&1 == :none))
+        Enum.reject(vals, &(&1 === :none))
         |> Enum.sum()
         |> Kernel.+(total)
     end
@@ -107,7 +107,7 @@ defmodule Golf.Game.Player do
     uncovered_card_count(player) === 2
   end
 
-  defp uncovered_card_count(player) do
+  def uncovered_card_count(player) do
     Enum.count(player.hand, fn card -> not card.covered? end)
   end
 

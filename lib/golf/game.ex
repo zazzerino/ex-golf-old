@@ -138,6 +138,25 @@ defmodule Golf.Game do
     {:ok, game}
   end
 
+  def handle_event(%{final_turn?: true} = game, %{action: :uncover} = event) do
+    %{player_id: player_id, data: %{hand_index: hand_index}} = event
+    events = [event | game.events]
+    players = Map.update!(game.players, event.player_id, &Player.uncover_card(&1, hand_index))
+    next_player_id = next_item(game.player_order, player_id)
+    {state, final_turn?} = check_game_over(player_id, players, game.final_turn?)
+
+    game = %Game{
+      game
+      | state: state,
+        players: players,
+        next_player_id: next_player_id,
+        final_turn?: final_turn?,
+        events: events
+    }
+
+    {:ok, game}
+  end
+
   def handle_event(%{state: :take} = game, %{action: :take_from_deck} = event) do
     with {:ok, card, deck} <- Deck.deal(game.deck),
          players <- Map.update!(game.players, event.player_id, &Player.hold_card(&1, card)) do
@@ -171,11 +190,19 @@ defmodule Golf.Game do
     table_cards = [card | game.table_cards]
     events = [event | game.events]
 
+    {state, next_player_id} =
+      if Player.uncovered_card_count(player) === Player.hand_size() - 1 do
+        {:take, next_item(game.player_order, event.player_id)}
+      else
+        {:uncover, game.next_player_id}
+      end
+
     game = %Game{
       game
-      | state: :uncover,
+      | state: state,
         players: players,
         table_cards: table_cards,
+        next_player_id: next_player_id,
         events: events
     }
 

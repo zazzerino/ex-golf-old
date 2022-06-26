@@ -5,6 +5,7 @@ const socket = new Socket("/socket", { params: { token: window.userToken } })
 socket.connect()
 
 const lobbyChan = socket.channel("room:lobby");
+
 let gameChan;
 
 lobbyChan.join()

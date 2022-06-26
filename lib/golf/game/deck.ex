@@ -31,7 +31,7 @@ defmodule Golf.Game.Deck do
   end
 
   def deal(deck) do
-    with {:ok, [card | []], deck} <- deal(deck, 1) do
+    with {:ok, [card], deck} <- deal(deck, 1) do
       {:ok, card, deck}
     end
   end
